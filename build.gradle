@@ -76,6 +76,10 @@ dependencies {
 		modImplementation(it)
 		include(it)
 	}
+
+	// javazoom (its for the radio)
+	implementation 'javazoom:jlayer:1.0.1'
+	include 'javazoom:jlayer:1.0.1'
 }
 
 processResources {
