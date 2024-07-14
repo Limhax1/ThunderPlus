@@ -117,7 +117,7 @@ public class Radio extends Module {
         RockFM("https://icast.connectmedia.hu/5301/live.mp3"),
         KossuthRadio("https://icast.connectmedia.hu/4736/mr1.mp3");
 
-        // add custom radios here, if you want a youtube video or something like that, download it and put the directory here
+        // add custom radios here, if you want a yt video or something like that, download it and put the directory here
         // (u can get the dir by opening the file in chrome)
         public final String URL;
 
