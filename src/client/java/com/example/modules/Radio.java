@@ -111,6 +111,7 @@ public class Radio extends Module {
 
     public enum Radios {
         Radio1("https://icast.connectmedia.hu/5202/live.mp3"),
+        Custom("file:///C:/Users/user/Downloads/1.mp3"),
         KoronaFM100("https://stream.koronafm100.hu/mp3"),
         RetroRadio("https://icast.connectmedia.hu/5002/live.mp3"),
         PetofiRadio("http://stream002.radio.hu/mr2.mp3"),
