@@ -1,6 +1,6 @@
 /*
     Credit to Exteron for making this for meteor, i ported this from it.
- */
+*/
 
 package com.example.modules;
 
@@ -106,6 +106,7 @@ public class Radio extends Module {
         if (player != null) {
             player.close();
             mc.player.sendMessage(Text.of("Radio stopped.")); // im searching for a goofy ah popup for this
+            // ThunderHack.notificationManager.publicity("Aura", isRu() ? "Цель успешно нейтрализована!" : "Target successfully neutralized!", 3, Notification.Type.SUCCESS);
         }
     }
 
