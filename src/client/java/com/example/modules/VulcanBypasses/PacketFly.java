@@ -1,28 +1,31 @@
 package com.example.modules.VulcanBypasses;
+
+import com.example.Utils.PlayerUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.TeleportConfirmC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.profiling.jfr.event.PacketSentEvent;
 import thunder.hack.events.impl.EventMove;
 import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
-import thunder.hack.utility.player.PlayerUtility;
 
 import java.util.HashSet;
 
 public class PacketFly extends Module {
-    public final Setting<Boolean> Vulcanfly = new Setting<>("VulcanFly", true);
-
     private final HashSet<PlayerMoveC2SPacket> packets = new HashSet<>();
+    public final Setting<Double> horizontalspeed = new Setting<Double>("speed", 4.6, 0.0, 5.0);
+    public final Setting<Boolean> Vulcanfly = new Setting<>("VulcanFly", true);
 
 
     private int flightCounter = 0;
     private int teleportID = 0;
 
     public PacketFly() {
-        super("Vulcan Inf Fly", Category.getCategory("VulcanBypasses"));
+        super("Vulcan-Inf Fly", Category.getCategory("VulcanBypasses"));
     }
 
     @EventHandler
@@ -31,9 +34,9 @@ public class PacketFly extends Module {
         double speed = 0.0;
         boolean checkCollisionBoxes = checkHitBoxes();
 
-        speed = mc.player.input.jumping && (checkCollisionBoxes || !(mc.player.input.movementForward != 0.0 || mc.player.input.movementSideways != 0.0)) ? (false && !checkCollisionBoxes ? (resetCounter(0) ? -0.032 : 0 / 20) : 0 / 20) : (mc.player.input.sneaking ? 0 / -20 : (!checkCollisionBoxes ? (resetCounter(0) ? (false ? -0.04 : 0.0) : 0.0) : 0.0));
+        speed = mc.player.input.jumping && (checkCollisionBoxes || !(mc.player.input.movementForward != 0.0 || mc.player.input.movementSideways != 0.0)) ? (false && !checkCollisionBoxes ? (resetCounter(10) ? -0.032 : 0 / 20) :0 / 20) : (mc.player.input.sneaking ? 0 / -20 : (!checkCollisionBoxes ? (resetCounter(4) ? (false ? -0.04 : 0.0) : 0.0) : 0.0));
 
-        Vec3d horizontal = PlayerUtility.getPlayer().getVelocity();
+        Vec3d horizontal = PlayerUtils.getHorizontalVelocity(horizontalspeed.getValue());
 
         mc.player.setVelocity(horizontal.x, speed, horizontal.z);
         sendPackets(mc.player.getVelocity().x, mc.player.getVelocity().y, mc.player.getVelocity().z, false);
@@ -60,6 +63,7 @@ public class PacketFly extends Module {
     @EventHandler
     public void onPacketSent(PacketEvent.Send event) {
         if (event.getPacket() instanceof PlayerMoveC2SPacket && !packets.remove((PlayerMoveC2SPacket) event.getPacket())) {
+            mc.player.sendMessage(Text.of("ran"));
             event.cancel();
         }
     }

@@ -13,7 +13,7 @@ public class NoFall extends Module {
     @EventHandler
     private void onPreTick(EventTick event) {
         if (!mc.player.isOnGround() && mc.player.fallDistance > 3f) {
-            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY() + 0.00000001, mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), false));
+            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY() + Math.random()*0.000001, mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), false));
             mc.player.onLanding();
         }
     }
