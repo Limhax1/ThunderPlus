@@ -5,7 +5,6 @@ import thunder.hack.gui.hud.HudElement;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import thunder.hack.gui.font.FontRenderers;
-import thunder.hack.gui.hud.HudElement;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.player.PlayerUtility;
@@ -13,8 +12,6 @@ import thunder.hack.utility.render.Render2DEngine;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
 

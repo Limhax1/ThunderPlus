@@ -2,7 +2,10 @@ package com.example;
 
 import com.example.commands.ExampleCommand;
 import com.example.hud.ExampleHudElement;
-import com.example.modules.Radio;
+import com.example.modules.Fun.Radio;
+import com.example.modules.VulcanBypasses.NoFall;
+import com.example.modules.VulcanBypasses.PacketFly;
+import com.example.modules.VulcanBypasses.VulcanNofall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thunder.hack.api.IAddon;
@@ -14,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ExampleMod implements IAddon {
-	public static final Logger LOGGER = LoggerFactory.getLogger("modid");
+	public static final Logger LOGGER = LoggerFactory.getLogger("Thunder+");
 
 	@Override
 	public void onInitialize() {
@@ -23,9 +26,8 @@ public class ExampleMod implements IAddon {
 
 	@Override
 	public List<Module> getModules() {
-		// Return a list of your modules here
-		return Arrays.asList(new Radio());
-	}
+		return Arrays.asList(new Radio(), new PacketFly(), new NoFall(), new VulcanNofall());
+    }
 
 	@Override
 	public List<Command> getCommands() {
@@ -44,7 +46,7 @@ public class ExampleMod implements IAddon {
 
 	@Override
 	public String getName() {
-		return "ExampleMod";
+		return "Thunder+";
 	}
 
 	@Override

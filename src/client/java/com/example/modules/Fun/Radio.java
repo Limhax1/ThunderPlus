@@ -2,7 +2,7 @@
     Credit to Exteron for making this for meteor, i ported this from it.
  */
 
-package com.example.modules;
+package com.example.modules.Fun;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.FactoryRegistry;
@@ -10,8 +10,9 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.text.Text;
+import thunder.hack.ThunderHack;
 import thunder.hack.events.impl.EventTick;
+import thunder.hack.gui.notification.Notification;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 
@@ -29,7 +30,7 @@ public class Radio extends Module {
     private AdvancedPlayer player;
 
     public Radio() {
-        super("Radio", Category.getCategory("Radio :D"));
+        super("Radio", Category.getCategory("Fun"));
     }
 
     @Override
@@ -67,9 +68,9 @@ public class Radio extends Module {
                     }
                 });
 
-                mc.player.sendMessage(Text.of("Starting Radio."));
+                ThunderHack.notificationManager.publicity("Radio", "Started Playing (" + Chanel.getValue().URL + ")", 4, Notification.Type.ENABLED);
             } else {
-                mc.player.sendMessage(Text.of("Selected radio channel URL not found."));
+                ThunderHack.notificationManager.publicity("Radio", "Selected radio chanel URL not found!", 4, Notification.Type.WARNING);
             }
         } catch (IOException | JavaLayerException e) {
             e.printStackTrace();
@@ -91,7 +92,7 @@ public class Radio extends Module {
                 port = (Port)mixer.getLine(Port.Info.SPEAKER);
                 port.open();
             } catch (LineUnavailableException e) {
-                mc.player.sendMessage(Text.of("this shouldn't happen..."));
+                ThunderHack.notificationManager.publicity("Radio", "This Shouldn't happen", 4, Notification.Type.ERROR);
                 return;
             }
             if (port.isControlSupported(FloatControl.Type.VOLUME)) {
@@ -105,7 +106,7 @@ public class Radio extends Module {
     private void stopRadio() {
         if (player != null) {
             player.close();
-            mc.player.sendMessage(Text.of("Radio stopped.")); // im searching for a goofy ah popup for this
+            ThunderHack.notificationManager.publicity("Radio", "Stopped Playing (" + Chanel.getValue().URL + ")", 4, Notification.Type.DISABLED);
         }
     }
 
@@ -120,6 +121,7 @@ public class Radio extends Module {
 
         // add custom radios here, if you want a yt video or something like that, download it and put the directory here
         // (u can get the dir by opening the file in chrome)
+        // also if you add custom songs, they won't loop, ill fix that sometime in the future
         public final String URL;
 
         Radios(String URL) {
