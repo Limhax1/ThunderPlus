@@ -19,12 +19,11 @@ public class VulcanNofall extends Module {
     public void onSendPacket(PacketEvent.Send event) {
         ClientPlayerEntity player = mc.player;
         if (event.getPacket() instanceof PlayerMoveC2SPacket packet) {
-            if (player.fallDistance > 3) {
+            if (player.fallDistance > 6) {
                 var vel = mc.player.getVelocity();
                 ((IPlayerMoveC2SPacket) packet).setOnGround(true);
-                mc.player.setVelocity(vel.x,0, vel.z);
-                player.fallDistance = -3f;
-                mc.player.setVelocity(vel.x, MotionY.getValue(), vel.z);
+                mc.player.setVelocity(vel.x,-0.1, vel.z);
+                player.fallDistance = 0f;
             }
         }
     }

@@ -5,6 +5,7 @@ import com.example.hud.ExampleHudElement;
 import com.example.modules.Fun.Radio;
 import com.example.modules.VulcanBypasses.NoFall;
 import com.example.modules.VulcanBypasses.PacketFly;
+import com.example.modules.VulcanBypasses.VulcanBoatFly;
 import com.example.modules.VulcanBypasses.VulcanNofall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class ExampleMod implements IAddon {
 
 	@Override
 	public List<Module> getModules() {
-		return Arrays.asList(new Radio(), new PacketFly(), new NoFall(), new VulcanNofall());
+		return Arrays.asList(new Radio(), new PacketFly(), new NoFall(), new VulcanNofall(), new VulcanBoatFly());
     }
 
 	@Override
