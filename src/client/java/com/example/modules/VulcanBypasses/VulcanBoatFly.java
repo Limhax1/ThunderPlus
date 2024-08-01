@@ -1,12 +1,9 @@
 package com.example.modules.VulcanBypasses;
 
-import com.example.Utils.PlayerUtils;
+import com.example.utils.PlayerUtils;
 import com.example.events.BoatMoveEvent;
 import meteordevelopment.orbit.EventHandler;
-import net.fabricmc.loader.impl.lib.sat4j.specs.IVec;
 import net.minecraft.util.math.*;
-import org.jetbrains.annotations.NotNull;
-import thunder.hack.events.impl.EventMove;
 import thunder.hack.events.impl.EventTick;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;

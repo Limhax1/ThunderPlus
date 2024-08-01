@@ -1,13 +1,12 @@
 package com.example.modules.VulcanBypasses;
 
-import com.example.Utils.PlayerUtils;
+import com.example.utils.PlayerUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.TeleportConfirmC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.profiling.jfr.event.PacketSentEvent;
 import thunder.hack.events.impl.EventMove;
 import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.modules.Module;

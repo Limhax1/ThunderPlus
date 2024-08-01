@@ -3,24 +3,10 @@
  * Copyright (c) Meteor Development.
  */
 
-package com.example.Utils;
+package com.example.utils;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BedBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.PotionItem;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
-import net.minecraft.world.RaycastContext;
 
 import java.awt.*;
 
