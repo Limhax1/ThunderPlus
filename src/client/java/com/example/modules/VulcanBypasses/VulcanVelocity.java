@@ -3,7 +3,7 @@ package com.example.modules.VulcanBypasses;
 import com.example.utils.DamageBoostUtil;
 import meteordevelopment.orbit.EventHandler;
 import thunder.hack.events.impl.EventTick;
-import thunder.hack.modules.Module;
+import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
 
 public class VulcanVelocity extends Module {
@@ -12,7 +12,7 @@ public class VulcanVelocity extends Module {
     public double counter = 0;
 
     public VulcanVelocity() {
-        super("Velocity+", Category.getCategory("VulcanBypasses"));
+        super("Velocity+", Module.Category.getCategory("VulcanBypasses"));
     }
 
 

@@ -3,11 +3,11 @@ package com.example.modules.VulcanBypasses;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import thunder.hack.events.impl.EventTick;
-import thunder.hack.modules.Module;
+import thunder.hack.features.modules.Module;
 
 public class NoFall extends Module {
     public NoFall() {
-        super("Universal Nofall", Category.getCategory("VulcanBypasses"));
+        super("Universal Nofall", Module.Category.getCategory("VulcanBypasses"));
     }
 
     @EventHandler

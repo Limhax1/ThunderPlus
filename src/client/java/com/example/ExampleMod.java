@@ -4,18 +4,20 @@ import com.example.commands.ExampleCommand;
 import com.example.hud.ExampleHudElement;
 import com.example.modules.Fun.Radio;
 import com.example.modules.VulcanBypasses.*;
+import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thunder.hack.api.IAddon;
-import thunder.hack.cmd.Command;
-import thunder.hack.gui.hud.HudElement;
-import thunder.hack.modules.Module;
+import thunder.hack.features.cmd.Command;
+import thunder.hack.features.hud.HudElement;
+import thunder.hack.features.modules.Module;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
 public class ExampleMod implements IAddon {
-	public static final Logger LOGGER = LoggerFactory.getLogger("Thunder+");
+	public static final Logger LOGGER = LoggerFactory.getLogger("modid");
 
 	@Override
 	public void onInitialize() {
@@ -24,8 +26,8 @@ public class ExampleMod implements IAddon {
 
 	@Override
 	public List<Module> getModules() {
-		return Arrays.asList(new Radio(), new PacketFly(), new NoFall(), new VulcanNofall(), new VulcanBoatFly(), new VulcanGlide(), new VulcanVelocity(), new VulcanBoatFly2());
-    }
+		return Arrays.asList(new Radio(), new VulcanBoatFly(), new VulcanBoatFly2(), new VulcanNofall(), new VulcanVelocity(), new VulcanGlide(), new PacketFly());
+	}
 
 	@Override
 	public List<Command> getCommands() {
@@ -54,6 +56,11 @@ public class ExampleMod implements IAddon {
 
 	@Override
 	public String getRepo() {
-		return "https://github.com/Limhax1/ThunderPlus";
+		return("https://github.com/Limhax1/ThunderPlus/");
+	}
+
+	@Override
+	public String getVersion() {
+		return "0.3";
 	}
 }

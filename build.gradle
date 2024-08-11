@@ -63,11 +63,13 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	libImpl("meteordevelopment:orbit:${project.orbit_version}")
-	modImpl("org.ladysnake:satin:${project.satin_version}")
+
+	implementation 'javazoom:jlayer:1.0.1'
+	include 'javazoom:jlayer:1.0.1'
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation 'com.github.Pan4ur:ThunderHack-Recode:ca68a71728'
+	modImplementation 'com.github.Pan4ur:ThunderHack-Recode:f384c308ae'
 	compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
 	configurations.libImpl.dependencies.each {
 		implementation(it)
@@ -76,10 +78,6 @@ dependencies {
 		modImplementation(it)
 		include(it)
 	}
-
-	// javazoom (its for the radio)
-	implementation 'javazoom:jlayer:1.0.1'
-	include 'javazoom:jlayer:1.0.1'
 }
 
 processResources {

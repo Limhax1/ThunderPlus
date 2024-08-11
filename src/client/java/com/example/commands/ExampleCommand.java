@@ -3,7 +3,7 @@ package com.example.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandSource;
 import org.jetbrains.annotations.NotNull;
-import thunder.hack.cmd.Command;
+import thunder.hack.features.cmd.Command;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 

@@ -11,9 +11,10 @@ import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 import meteordevelopment.orbit.EventHandler;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.Managers;
 import thunder.hack.events.impl.EventTick;
+import thunder.hack.features.modules.Module;
 import thunder.hack.gui.notification.Notification;
-import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 
 import javax.sound.sampled.*;
@@ -30,7 +31,7 @@ public class Radio extends Module {
     private AdvancedPlayer player;
 
     public Radio() {
-        super("Radio", Category.getCategory("Fun"));
+        super("Radio", Module.Category.getCategory("Fun"));
     }
 
     @Override
@@ -68,9 +69,9 @@ public class Radio extends Module {
                     }
                 });
 
-                ThunderHack.notificationManager.publicity("Radio", "Started Playing (" + Chanel.getValue().URL + ")", 4, Notification.Type.ENABLED);
+                Managers.NOTIFICATION.publicity("Radio", "Started Playing (" + Chanel.getValue().URL + ")", 4, Notification.Type.ENABLED);
             } else {
-                ThunderHack.notificationManager.publicity("Radio", "Selected radio chanel URL not found!", 4, Notification.Type.WARNING);
+                Managers.NOTIFICATION.publicity("Radio", "Selected radio chanel URL not found!", 4, Notification.Type.WARNING);
             }
         } catch (IOException | JavaLayerException e) {
             e.printStackTrace();
@@ -92,7 +93,7 @@ public class Radio extends Module {
                 port = (Port)mixer.getLine(Port.Info.SPEAKER);
                 port.open();
             } catch (LineUnavailableException e) {
-                ThunderHack.notificationManager.publicity("Radio", "This Shouldn't happen", 4, Notification.Type.ERROR);
+                Managers.NOTIFICATION.publicity("Radio", "This Shouldn't happen", 4, Notification.Type.ERROR);
                 return;
             }
             if (port.isControlSupported(FloatControl.Type.VOLUME)) {
@@ -106,7 +107,7 @@ public class Radio extends Module {
     private void stopRadio() {
         if (player != null) {
             player.close();
-            ThunderHack.notificationManager.publicity("Radio", "Stopped Playing (" + Chanel.getValue().URL + ")", 4, Notification.Type.DISABLED);
+            Managers.NOTIFICATION.publicity("Radio", "Stopped Playing (" + Chanel.getValue().URL + ")", 4, Notification.Type.DISABLED);
         }
     }
 

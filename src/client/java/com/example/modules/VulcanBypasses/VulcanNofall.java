@@ -4,15 +4,15 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import thunder.hack.events.impl.PacketEvent;
+import thunder.hack.features.modules.Module;
 import thunder.hack.injection.accesors.IPlayerMoveC2SPacket;
-import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 
 public class VulcanNofall extends Module {
     public final Setting<Integer> MotionY = new Setting<>("YMotion", -4, -10, 2);
 
     public VulcanNofall() {
-        super("Vulcan Nofall", Category.getCategory("VulcanBypasses"));
+        super("Vulcan Nofall", Module.Category.getCategory("VulcanBypasses"));
     }
 
     @EventHandler

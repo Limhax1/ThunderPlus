@@ -9,7 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import thunder.hack.events.impl.EventMove;
 import thunder.hack.events.impl.PacketEvent;
-import thunder.hack.modules.Module;
+import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
 
 import java.util.HashSet;
@@ -24,7 +24,7 @@ public class PacketFly extends Module {
     private int teleportID = 0;
 
     public PacketFly() {
-        super("Vulcan-Inf Fly", Category.getCategory("VulcanBypasses"));
+        super("Vulcan-Inf Fly", Module.Category.getCategory("VulcanBypasses"));
     }
 
     @EventHandler

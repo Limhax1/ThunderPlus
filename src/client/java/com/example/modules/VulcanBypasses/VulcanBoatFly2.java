@@ -20,10 +20,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.Managers;
 import thunder.hack.events.impl.EventPlayerTravel;
 import thunder.hack.events.impl.PacketEvent;
+import thunder.hack.features.modules.Module;
 import thunder.hack.gui.notification.Notification;
-import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.player.MovementUtility;
@@ -66,12 +67,12 @@ public class VulcanBoatFly2 extends Module {
     private boolean jitterSwitch = false;
 
     public VulcanBoatFly2() {
-        super("VulcanBoatFlyV2", Category.getCategory("VulcanBypasses"));
+        super("VulcanBoatFlyV2", Module.Category.getCategory("VulcanBypasses"));
     }
 
     @Override
     public void onEnable() {
-        ThunderHack.notificationManager.publicity("BoatFly", "Please dont change any of the settings, and dont spam going forward or upward", 10, Notification.Type.ENABLED);
+        Managers.NOTIFICATION.publicity("BoatFly", "Please dont change any of the settings, and dont spam going forward or upward", 10, Notification.Type.ENABLED);
         if (fullNullCheck()) {
             disable();
             return;

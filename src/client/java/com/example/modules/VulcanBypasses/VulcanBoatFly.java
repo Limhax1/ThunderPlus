@@ -5,7 +5,7 @@ import com.example.events.BoatMoveEvent;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.util.math.*;
 import thunder.hack.events.impl.EventTick;
-import thunder.hack.modules.Module;
+import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
 
 public class VulcanBoatFly extends Module {
@@ -16,7 +16,7 @@ public class VulcanBoatFly extends Module {
 
 
     public VulcanBoatFly() {
-        super("VulcanBoatFly", Category.getCategory("VulcanBypasses"));
+        super("VulcanBoatFly", Module.Category.getCategory("VulcanBypasses"));
     }
 
     private static final double FALL_SPEED = 1.01;
