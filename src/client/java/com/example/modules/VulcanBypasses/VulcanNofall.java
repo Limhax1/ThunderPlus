@@ -9,7 +9,8 @@ import thunder.hack.injection.accesors.IPlayerMoveC2SPacket;
 import thunder.hack.setting.Setting;
 
 public class VulcanNofall extends Module {
-    public final Setting<Integer> MotionY = new Setting<>("YMotion", -4, -10, 2);
+    private final Setting<Float> MotionY = new Setting<>("Ymotion", -3f, -8.0f, 1f);
+    private final Setting<Float> Falldistance = new Setting<>("Falldistance", 4f, 0f, 10f);
 
     public VulcanNofall() {
         super("Vulcan Nofall", Module.Category.getCategory("VulcanBypasses"));
@@ -19,11 +20,11 @@ public class VulcanNofall extends Module {
     public void onSendPacket(PacketEvent.Send event) {
         ClientPlayerEntity player = mc.player;
         if (event.getPacket() instanceof PlayerMoveC2SPacket packet) {
-            if (player.fallDistance > 6) {
+            if (player.fallDistance > Falldistance.getValue()) {
                 var vel = mc.player.getVelocity();
                 ((IPlayerMoveC2SPacket) packet).setOnGround(true);
-                mc.player.setVelocity(vel.x,-0.1, vel.z);
-                player.fallDistance = 0f;
+                mc.player.setVelocity(vel.x,MotionY.getValue(), vel.z);
+                player.fallDistance = -Falldistance.getValue();
             }
         }
     }

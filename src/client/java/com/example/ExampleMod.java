@@ -2,9 +2,8 @@ package com.example;
 
 import com.example.commands.ExampleCommand;
 import com.example.hud.ExampleHudElement;
-import com.example.modules.Fun.Radio;
+import com.example.modules.Other.*;
 import com.example.modules.VulcanBypasses.*;
-import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thunder.hack.api.IAddon;
@@ -12,12 +11,11 @@ import thunder.hack.features.cmd.Command;
 import thunder.hack.features.hud.HudElement;
 import thunder.hack.features.modules.Module;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
 public class ExampleMod implements IAddon {
-	public static final Logger LOGGER = LoggerFactory.getLogger("modid");
+	public static final Logger LOGGER = LoggerFactory.getLogger("ThunderPlus");
 
 	@Override
 	public void onInitialize() {
@@ -26,7 +24,7 @@ public class ExampleMod implements IAddon {
 
 	@Override
 	public List<Module> getModules() {
-		return Arrays.asList(new Radio(), new VulcanBoatFly(), new VulcanBoatFly2(), new VulcanNofall(), new VulcanVelocity(), new VulcanGlide(), new PacketFly());
+		return Arrays.asList(new Radio(), new VulcanSpeed(), new VulcanBoatFly(), new VulcanBoatFly2(), new VulcanNofall(), new VulcanVelocity(), new VulcanGlide(), new PacketFly(), new PingSpoof(), new AAC1910(), new VerusCombat(), new BedFuckerButWithoutPacket(), new VulcanSpider());
 	}
 
 	@Override

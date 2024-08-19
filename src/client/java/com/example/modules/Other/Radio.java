@@ -2,7 +2,7 @@
     Credit to Exteron for making this for meteor, i ported this from it.
  */
 
-package com.example.modules.Fun;
+package com.example.modules.Other;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.FactoryRegistry;
@@ -10,7 +10,6 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 import meteordevelopment.orbit.EventHandler;
-import thunder.hack.ThunderHack;
 import thunder.hack.core.Managers;
 import thunder.hack.events.impl.EventTick;
 import thunder.hack.features.modules.Module;
@@ -31,7 +30,7 @@ public class Radio extends Module {
     private AdvancedPlayer player;
 
     public Radio() {
-        super("Radio", Module.Category.getCategory("Fun"));
+        super("Radio", Module.Category.getCategory("Other"));
     }
 
     @Override
