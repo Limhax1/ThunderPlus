@@ -15,11 +15,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import thunder.hack.core.Managers;
 import thunder.hack.events.impl.EventBreakBlock;
 import thunder.hack.events.impl.EventTick;
 import thunder.hack.features.modules.Module;
+import thunder.hack.gui.notification.Notification;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.ColorSetting;
+import thunder.hack.setting.impl.PositionSetting;
 import thunder.hack.utility.render.BlockAnimationUtility;
 
 import java.util.List;
@@ -40,6 +43,8 @@ public class PathfindingModule extends Module {
     private BlockPos lastBrokenPos = null;
     private BlockPos currentBreakingBlock = null;
     private long breakStartTime = 0;
+    private long lastPathfindingTime = 0;
+    private static final long PATHFINDING_COOLDOWN = 1000; // 1 másodperc
 
 
 
@@ -72,10 +77,10 @@ public class PathfindingModule extends Module {
     @Override
     public void onEnable() {
         super.onEnable();
-        if(miningmode.getValue()) {
+        if(miningmode != null && miningmode.getValue()) {
             targetPos = findNearestGemstone();
             startPathfinding(targetPos);
-        } else if(!miningmode.getValue()) {
+        } else if(miningmode != null && !miningmode.getValue()) {
             targetPos = new BlockPos(CoordX.getValue() , CoordY.getValue(), CoordZ.getValue());
             startPathfinding(targetPos);
         }
@@ -93,20 +98,17 @@ public class PathfindingModule extends Module {
             return;
         }
 
-        if (mc.world != null && !miningmode.getValue()) {
+        if (mc.world != null && miningmode != null && !miningmode.getValue()) {
             sendMessage("Pathfinding from: " + mc.player.getBlockPos().toShortString() + " to: " + targetPos.toShortString());
             this.path = Pathfinder.findPath(mc.player.getBlockPos(), targetPos, mc.world);
             if (path == null || path.isEmpty()) {
-                if(debug.getValue()) {
-                    sendMessage("No path found, disabling");
-                }
+                    Managers.NOTIFICATION.publicity("Pathfinder", "No Path found, disabling", 4, Notification.Type.ERROR);
+
                 toggle();
             } else {
-                if(debug.getValue()) {
-                    sendMessage("Path found! (Length: " + path.size() + ")");
-                }
+                Managers.NOTIFICATION.publicity("Pathfinder", "Path Found!", 4, Notification.Type.ERROR);
             }
-        } else if(mc.world != null && miningmode.getValue()) {
+        } else if(mc.world != null && miningmode != null && miningmode.getValue()) {
             if(debug.getValue()) {
                 sendMessage("Pathfinding from: " + mc.player.getBlockPos().toShortString() + " to: " + targetPos.toShortString());
             }
@@ -132,25 +134,15 @@ public class PathfindingModule extends Module {
 
     @EventHandler
     public void onTick(EventTick event) {
-        if(path != null) {
-            if (pathIndex >= path.size() && !miningmode.getValue()){
-                mc.options.forwardKey.setPressed(false);
-                if(debug.getValue()) {
-                    sendMessage("Destination reached, disabling");
-                }
-                toggle();
-                return;
-            } else if(pathIndex >= path.size() && miningmode.getValue()) {
-                stopPathfinding();
-                startPathfinding(findNearestGemstone());
-            }
-
-            if(path == null || path.isEmpty()) {
-                if(debug.getValue()) {
-                    sendMessage("Path invalid, disabling");
-                }
-                return;
-            }
+        if (mc.player == null || mc.world == null) return;
+        
+        if (path == null || pathIndex >= path.size()) {
+            // Az aktuális út véget ért, indítsunk új keresést
+            tryStartNewPathfinding();
+            return;
+        }
+        
+        try {
             BlockPos currentPos = mc.player.getBlockPos();
             BlockPos nextPos = path.get(pathIndex);
 
@@ -161,9 +153,7 @@ public class PathfindingModule extends Module {
             }
 
             if(hasBeenStandingStillForTooLong() && mc.player.age % 200 == 0 && !mc.interactionManager.isBreakingBlock()) {
-                if(debug.getValue()) {
-                    sendMessage("Seems like you got stuck, recalculating path");
-                }
+                Managers.NOTIFICATION.publicity("Pathfinder", "Seems like you got stuck, recalculating", 4, Notification.Type.ERROR);
                 stopPathfinding();
                 startPathfinding(targetPos);
                 mc.player.jump();
@@ -179,10 +169,10 @@ public class PathfindingModule extends Module {
                             mc.player.jump();
                         }
                     } else {
-                        if (mc.world.getBlockState(posAbovePlayer).getBlock() != Blocks.AIR && !miningmode.getValue()) {
+                        if (mc.world.getBlockState(posAbovePlayer).getBlock() != Blocks.AIR && miningmode != null && !miningmode.getValue()) {
                             rotateToBlockonTick(mc, posAbovePlayer);
                             tryBreakBlock(posAbovePlayer);
-                        } else if (mc.world.getBlockState(posAboveNext).getBlock() != Blocks.AIR && !miningmode.getValue()) {
+                        } else if (mc.world.getBlockState(posAboveNext).getBlock() != Blocks.AIR && miningmode != null && !miningmode.getValue()) {
                             rotateToBlockonTick(mc, posAboveNext);
                             tryBreakBlock(posAboveNext);
 
@@ -202,10 +192,10 @@ public class PathfindingModule extends Module {
                     BlockPos posBelowNext = nextPos.add(0, 1, 0);
                     BlockPos posAboveNext = nextPos.add(0, 2, 0);
 
-                    if (mc.world.getBlockState(posAboveNext).getBlock() != Blocks.AIR && !miningmode.getValue()) {
+                    if (mc.world.getBlockState(posAboveNext).getBlock() != Blocks.AIR && miningmode != null && !miningmode.getValue()) {
                         rotateToBlockonTick(mc, posAboveNext);
                         tryBreakBlock(posAboveNext);
-                    } else if (mc.world.getBlockState(posBelowNext).getBlock() != Blocks.AIR && !miningmode.getValue()) {
+                    } else if (mc.world.getBlockState(posBelowNext).getBlock() != Blocks.AIR && miningmode != null && !miningmode.getValue()) {
                         rotateToBlockonTick(mc, posBelowNext);
                         tryBreakBlock(posBelowNext);
                     }
@@ -219,7 +209,7 @@ public class PathfindingModule extends Module {
                 BlockPos corner2 = new BlockPos(currentPos.getX(), nextPos.getY(), nextPos.getZ());
                 //RenderUtils.renderTickingBlock(corner2, sideColor1.get(), linedebug.get(), ShapeMode.Both, 0, 40, true, false);
                 //RenderUtils.renderTickingBlock(corner2, sideColor1.get(), linedebug.get(), ShapeMode.Both, 0, 40, true, false);
-                if (nextPos.getY() == currentPos.getY() - 1 && !miningmode.getValue()) {
+                if (nextPos.getY() == currentPos.getY() - 1 && miningmode != null && !miningmode.getValue()) {
                     if (mc.world.getBlockState(corner1).isAir() && mc.world.getBlockState(corner1.up()).getBlock() == Blocks.AIR && mc.world.getBlockState(corner1.add(0, 2, 0)).getBlock() != Blocks.AIR && mc.world.getBlockState(nextPos).getBlock() == Blocks.AIR) {
                         rotateToBlockonTick(mc, corner1.add(0, 2, 0));
                         tryBreakBlock(corner1.add(0, 2, 0));
@@ -239,7 +229,7 @@ public class PathfindingModule extends Module {
                         if (mc.world.getBlockState(blockToBreak).getBlock() != Blocks.AIR && mc.world.getBlockState(mc.player.getBlockPos().add(0, 1, 0)).getBlock() == Blocks.AIR && mc.world.getBlockState(nextPos.add(0, 2, 0)).getBlock() == Blocks.AIR && mc.world.getBlockState(nextPos).getBlock() == Blocks.AIR || mc.world.getBlockState(nextPos).getBlock() == Blocks.SHORT_GRASS || mc.world.getBlockState(nextPos).getBlock() == Blocks.TALL_GRASS) {
                             rotateToBlockonTick(mc, blockToBreak);
                             tryBreakBlock(blockToBreak);
-                        } else if(!miningmode.getValue() && mc.world.getBlockState(blockToBreak).getBlock() != Blocks.AIR && mc.world.getBlockState(mc.player.getBlockPos().add(0, 2, 0)).getBlock() == Blocks.AIR && mc.world.getBlockState(nextPos.add(0, 2, 0)).getBlock() != Blocks.AIR && mc.world.getBlockState(nextPos).getBlock() == Blocks.AIR) {
+                        } else if(miningmode != null && !miningmode.getValue() && mc.world.getBlockState(blockToBreak).getBlock() != Blocks.AIR && mc.world.getBlockState(mc.player.getBlockPos().add(0, 2, 0)).getBlock() == Blocks.AIR && mc.world.getBlockState(nextPos.add(0, 2, 0)).getBlock() != Blocks.AIR && mc.world.getBlockState(nextPos).getBlock() == Blocks.AIR) {
                             rotateToBlockonTick(mc, nextPos.add(0, 2, 0));
                             tryBreakBlock(nextPos.add(0, 2, 0));
                         } else if(mc.world.getBlockState(nextPos).isAir() && mc.world.getBlockState(nextPos.up()).isAir() && mc.world.getBlockState(corner2.add(0, 1, 0)).getBlock() != Blocks.AIR || mc.world.getBlockState(corner1.add(0, 1, 0)).getBlock() != Blocks.AIR) {
@@ -250,11 +240,11 @@ public class PathfindingModule extends Module {
                 }
             }
 
-            if(miningmode.getValue() && mc.world.getBlockState(nextPos).getBlock() != Blocks.AIR && mc.world.getBlockState(nextPos.up()).getBlock() == Blocks.AIR && mc.world.getBlockState(nextPos).getBlock() != Blocks.BEDROCK) {
+            if(miningmode != null && miningmode.getValue() && mc.world.getBlockState(nextPos).getBlock() != Blocks.AIR && mc.world.getBlockState(nextPos.up()).getBlock() == Blocks.AIR && mc.world.getBlockState(nextPos).getBlock() != Blocks.BEDROCK) {
                 rotateToBlockonTick(mc, nextPos);
                 tryBreakBlock(nextPos);
 
-            } else if (miningmode.getValue() && mc.world.getBlockState(nextPos.up()).getBlock() != Blocks.AIR) {
+            } else if (miningmode != null && miningmode.getValue() && mc.world.getBlockState(nextPos.up()).getBlock() != Blocks.AIR) {
                 rotateToBlockonTick(mc, nextPos.up());
                 tryBreakBlock(nextPos.up());
             } else if(hasBeenStandingStillForTooLong() && mc.world.getBlockState(path.get(pathIndex)).getBlock() != Blocks.AIR) {
@@ -265,7 +255,7 @@ public class PathfindingModule extends Module {
                 tryBreakBlock(path.get(pathIndex).up());
             }
 
-            if(mc.world.getBlockState(nextPos.add(0, 2, 0)).getBlock() != Blocks.AIR  && mc.world.getBlockState(nextPos).getBlock() == Blocks.AIR && mc.world.getBlockState(nextPos.up()).getBlock() == Blocks.AIR && miningmode.getValue()) {
+            if(mc.world.getBlockState(nextPos.add(0, 2, 0)).getBlock() != Blocks.AIR  && mc.world.getBlockState(nextPos).getBlock() == Blocks.AIR && mc.world.getBlockState(nextPos.up()).getBlock() == Blocks.AIR && miningmode != null && miningmode.getValue()) {
                 rotateToBlockonTick(mc, nextPos.add(0, 2, 0));
                 tryBreakBlock(nextPos.add(0, 2, 0));
             }
@@ -275,6 +265,8 @@ public class PathfindingModule extends Module {
             if (mc.player.getPos().squaredDistanceTo(nextPosVec) < MaxMistake.getValue()) {
                 pathIndex++;
             }
+        } catch (Exception e) {
+            // Naplózza a hibát vagy kezelje megfelelően
         }
     }
 
@@ -409,6 +401,7 @@ public class PathfindingModule extends Module {
 
     public void stopPathfinding() {
         path = null;
+        pathIndex = 0;
     }
 
     private void tryBreakBlock(BlockPos pos) {
@@ -431,7 +424,7 @@ public class PathfindingModule extends Module {
         mc.options.attackKey.setPressed(true);
         blockmainrots = true;
 
-        if (System.currentTimeMillis() - breakStartTime > 2000 && mc.world.getBlockState(pos).getBlock() != Blocks.OBSIDIAN || mc.world.getBlockState(pos).getBlock() != Blocks.CRYING_OBSIDIAN) {
+        if (System.currentTimeMillis() - breakStartTime > 2000 && !mc.interactionManager.isBreakingBlock()) {
             if(debug.getValue()) {
                 sendMessage("Breaking the block took too long, retrying");
             }
@@ -457,5 +450,28 @@ public class PathfindingModule extends Module {
         if(debug.getValue()) {
             sendMessage("false");
         }
+    }
+
+    private void tryStartNewPathfinding() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastPathfindingTime > PATHFINDING_COOLDOWN) {
+            if (!isTargetStillOre()) {
+                stopPathfinding();
+                startPathfinding(findNearestGemstone());
+                lastPathfindingTime = currentTime;
+            }
+        }
+    }
+
+    private boolean isTargetStillOre() {
+        if (path == null || path.isEmpty()) return false;
+        BlockPos target = path.get(path.size() - 1);
+        return isOreBlock(mc.world.getBlockState(target).getBlock());
+    }
+
+    private boolean isOreBlock(Block block) {
+        // Implementálja az ércblokk ellenőrzését
+        // Például: return block == Blocks.IRON_ORE;
+        return false;
     }
 }
