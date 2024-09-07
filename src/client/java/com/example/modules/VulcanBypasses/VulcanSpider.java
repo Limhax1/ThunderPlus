@@ -176,7 +176,7 @@ public class VulcanSpider extends Module {
                         }
                     }
                     case Block -> {
-                        if (mc.player.getPos().y >= startY + 3) {
+                        if (mc.player.getPos(). y >= startY + 3) {
                             block = true;
                         }
                     }

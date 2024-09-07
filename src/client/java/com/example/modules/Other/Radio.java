@@ -36,6 +36,7 @@ public class Radio extends Module {
     @Override
     public void onEnable() {
         playRadio();
+        //            BlockAnimationUtility.renderBlock(pos, color.getValue().getColorObject(), 1, color.getValue().getColorObject(), BlockAnimationUtility.BlockAnimationMode.Fade, BlockAnimationUtility.BlockRenderMode.Line);
     }
 
     @Override

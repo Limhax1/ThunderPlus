@@ -24,7 +24,7 @@ public class ExampleMod implements IAddon {
 
 	@Override
 	public List<Module> getModules() {
-		return Arrays.asList(new Radio(), new VulcanSpeed(), new VulcanBoatFly(), new VulcanBoatFly2(), new VulcanNofall(), new VulcanVelocity(), new VulcanGlide(), new PacketFly(), new PingSpoof(), new AAC1910(), new VerusCombat(), new BedFuckerButWithoutPacket(), new VulcanSpider());
+		return Arrays.asList(new Radio(), new VulcanSpeed(), new VulcanBoatFly(), new VulcanBoatFly2(), new VulcanNofall(), new VulcanVelocity(), new VulcanGlide(), new PacketFly(), new PingSpoof(), new AAC1910(), new VerusCombat(), new BedFuckerButWithoutPacket(), new VulcanSpider(), new VulcantSpider(), new PathfindingModule());
 	}
 
 	@Override
