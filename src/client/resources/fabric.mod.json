@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "thunder",
 	"version": "${version}",
 	"name": "Thunder+",
 	"description": "Adds stuff to th",

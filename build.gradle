@@ -43,7 +43,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"modid" {
+		"Thunder+" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}

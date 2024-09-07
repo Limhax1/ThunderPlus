@@ -431,7 +431,7 @@ public class PathfindingModule extends Module {
         mc.options.attackKey.setPressed(true);
         blockmainrots = true;
 
-        if (System.currentTimeMillis() - breakStartTime > 2000) {
+        if (System.currentTimeMillis() - breakStartTime > 2000 && mc.world.getBlockState(pos).getBlock() != Blocks.OBSIDIAN || mc.world.getBlockState(pos).getBlock() != Blocks.CRYING_OBSIDIAN) {
             if(debug.getValue()) {
                 sendMessage("Breaking the block took too long, retrying");
             }
