@@ -1,6 +1,7 @@
 package com.example.modules.Other;
 
 import com.example.utils.BlockUtils;
+import com.example.utils.PathFinder.ElytraFlyUtil;
 import com.example.utils.PathFinder.Pathfinder;
 import com.example.utils.PathFinder.PathfinderMiner;
 import meteordevelopment.orbit.EventHandler;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import thunder.hack.core.Managers;
 import thunder.hack.events.impl.EventBreakBlock;
+import thunder.hack.events.impl.EventPostTick;
 import thunder.hack.events.impl.EventTick;
 import thunder.hack.features.modules.Module;
 import thunder.hack.gui.notification.Notification;
@@ -45,7 +47,7 @@ public class PathfindingModule extends Module {
     private long breakStartTime = 0;
     private long lastPathfindingTime = 0;
     private static final long PATHFINDING_COOLDOWN = 1000; // 1 másodperc
-
+    private boolean isElytraFlying = false;
 
 
     public final Setting<Integer> CoordX = new Setting<>("CoordX", 100, -999999, 999999);
@@ -63,6 +65,10 @@ public class PathfindingModule extends Module {
     public static Setting<Boolean> miningmode = new Setting<>("Miningmode", true);
     public static Setting<Boolean> render = new Setting<>("Render", true);
     public static Setting<Boolean> debug = new Setting<>("Debug Messages", true);
+    public static Setting<Boolean> elytraFlyEnabled = new Setting<>("Elytra Fly", true);
+    public final Setting<Float> elytraMinY = new Setting<>("elytraMinY", 100.0f, 1.0f, 300.0f);
+    public final Setting<Float> elytraMaxY = new Setting<>("elytraMaxY", 120.0f, 1.0f, 300.0f);
+    public final Setting<Float> rotationSpeed = new Setting<>("elytrarotationspeed", 5.0f, 0.1f, 10.0f);
     private final Setting<ColorSetting> linedebug = new Setting<>("Color", new ColorSetting(0xFFC589FF));
     private final Setting<ColorSetting> lineColor = new Setting<>("Color", new ColorSetting(0xFF90EEC8));
     //private final Setting<ColorSetting> lineColor1 = new Setting<>("Color", new ColorSetting(0xFF00FFFF));
@@ -77,12 +83,16 @@ public class PathfindingModule extends Module {
     @Override
     public void onEnable() {
         super.onEnable();
-        if(miningmode != null && miningmode.getValue()) {
-            targetPos = findNearestGemstone();
-            startPathfinding(targetPos);
-        } else if(miningmode != null && !miningmode.getValue()) {
-            targetPos = new BlockPos(CoordX.getValue() , CoordY.getValue(), CoordZ.getValue());
-            startPathfinding(targetPos);
+        if (elytraFlyEnabled.getValue()) {
+            isElytraFlying = true;
+        } else {
+            if  (miningmode != null && miningmode.getValue()) {
+                targetPos = findNearestGemstone();
+                startPathfinding(targetPos);
+            } else if(miningmode != null && !miningmode.getValue()) {
+                targetPos = new BlockPos(CoordX.getValue() , CoordY.getValue(), CoordZ.getValue());
+                startPathfinding(targetPos);
+            }
         }
     }
 
@@ -133,7 +143,7 @@ public class PathfindingModule extends Module {
     }
 
     @EventHandler
-    public void onTick(EventTick event) {
+    public void onRender2D(DrawContext context) {
         if (mc.player == null || mc.world == null) return;
         
         if (path == null || pathIndex >= path.size()) {
@@ -141,7 +151,11 @@ public class PathfindingModule extends Module {
             tryStartNewPathfinding();
             return;
         }
-        
+
+        if (isElytraFlying) {
+            return;
+        }
+
         try {
             BlockPos currentPos = mc.player.getBlockPos();
             BlockPos nextPos = path.get(pathIndex);
@@ -166,7 +180,7 @@ public class PathfindingModule extends Module {
 
                     if (mc.world.getBlockState(posAbovePlayer).getBlock() == Blocks.AIR && mc.world.getBlockState(posAboveNext).getBlock() == Blocks.AIR && !BlockUtils.breaking && diffYaw > -maxdegree.getValue() && diffYaw < maxdegree.getValue()) {
                         if(!mc.interactionManager.isBreakingBlock()) {
-                            mc.player.jump();
+                            mc.options.jumpKey.setPressed(true);
                         }
                     } else {
                         if (mc.world.getBlockState(posAbovePlayer).getBlock() != Blocks.AIR && miningmode != null && !miningmode.getValue()) {
@@ -179,6 +193,8 @@ public class PathfindingModule extends Module {
                         }
                     }
                 }
+            } else if(nextPos.getY() == currentPos.getY()) {
+                mc.options.jumpKey.setPressed(false);
             } else if(nextPos.getY() >= currentPos.getY() + 2){
                 if(debug.getValue()) {
                     sendMessage("Mismatch detected in the path, recalculating path");
@@ -268,12 +284,8 @@ public class PathfindingModule extends Module {
         } catch (Exception e) {
             // Naplózza a hibát vagy kezelje megfelelően
         }
-    }
 
 
-
-    @EventHandler
-    public void onRender2D(DrawContext context) {
         if (path == null || pathIndex >= path.size()) {
             return;
         }
@@ -337,8 +349,8 @@ public class PathfindingModule extends Module {
         diffYaw = MathHelper.wrapDegrees(yaw - currentYaw);
         diffPitch = pitch - currentPitch;
 
-        double stepYaw = diffYaw * yawSpeed.getValue() / 2;
-        double stepPitch = diffPitch * pitchSpeed.getValue() / 2;
+        double stepYaw = diffYaw * yawSpeed.getValue() / 10;
+        double stepPitch = diffPitch * pitchSpeed.getValue() / 10;
 
         double newYaw = currentYaw + stepYaw;
         double newPitch = currentPitch + stepPitch;
@@ -446,6 +458,7 @@ public class PathfindingModule extends Module {
     @Override
     public void onDisable() {
         super.onDisable();
+        isElytraFlying = false;
         mc.options.attackKey.setPressed(false);
         if(debug.getValue()) {
             sendMessage("false");
@@ -473,5 +486,24 @@ public class PathfindingModule extends Module {
         // Implementálja az ércblokk ellenőrzését
         // Például: return block == Blocks.IRON_ORE;
         return false;
+    }
+
+    @EventHandler
+    private void onTick(EventPostTick event) {
+        if (elytraFlyEnabled.getValue() && mc.player != null) {
+            if (mc.player.getInventory().getArmorStack(2).getItem().toString().contains("elytra")) {
+                if (!mc.player.isFallFlying()) {
+                    mc.options.jumpKey.setPressed(true);
+                } else {
+                    mc.options.jumpKey.setPressed(false);
+                    isElytraFlying = true;
+                    ElytraFlyUtil.autoFly(elytraMinY.getValue(), elytraMaxY.getValue(), rotationSpeed.getValue());
+                }
+            } else {
+                isElytraFlying = false;
+            }
+        } else {
+            isElytraFlying = false;
+        }
     }
 }
