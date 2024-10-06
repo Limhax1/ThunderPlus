@@ -43,10 +43,10 @@ public class PathfindingModule extends Module {
     private BlockPos nextPos;
 
 
-    public final Setting<Integer> CoordX = new Setting<>("CoordX", 100, -999999, 999999);
-    public final Setting<Integer> CoordY = new Setting<>("CoordY", 100, -64, 270);
-    public final Setting<Integer> CoordZ = new Setting<>("CoordZ", 100, -999999, 999999);
-    public final Setting<Float> YOffset = new Setting<>("YOffset", 1.0f, -2.0f, 2.0f);
+    public static Setting<Integer> CoordX = new Setting<>("CoordX", 100, -999999, 999999);
+    public static Setting<Integer> CoordY = new Setting<>("CoordY", 100, -64, 270);
+    public static Setting<Integer> CoordZ = new Setting<>("CoordZ", 100, -999999, 999999);
+    public Setting<Float> YOffset = new Setting<>("YOffset", 1.0f, -2.0f, 2.0f);
     public final Setting<Float> yawSpeed = new Setting<>("YawSpeed", 1.0f, 0.0f, 2.0f);
     public final Setting<Float> pitchSpeed = new Setting<>("PitchSpeed", 1.0f, 0.0f, 2.0f);
     public final Setting<Float> randommult = new Setting<>("RandomMult", 1.0f, 0.0f, 2.0f);
